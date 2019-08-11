@@ -1,7 +1,11 @@
 var assert = require('assert');
 var authController = require('../../controllers/auth.controller');
-
-
+var expect = require('chai').expect;
+var should = require('chai').should();
+var chai = require("chai");
+var chaiAsPromised = require("chai-as-promised");
+chai.use(chaiAsPromised);
+chai.should();
 
 describe('AuthController', function () {
     beforeEach(function settingUpRoles() {
@@ -12,11 +16,16 @@ describe('AuthController', function () {
     describe('isAuthorized', function () {
 
         it('Should return false if not authorized', function () {
-            assert.equal(false, authController.isAuthorized('admin'));
+            //assert.equal(false, authController.isAuthorized('admin'));
+            var isAuth = authController.isAuthorized('admin');
+            expect(isAuth).to.be.false
+
         })
         it('Should return true if authorized', function () {
             authController.setRoles(['user', 'admin']);
-            assert.equal(true, authController.isAuthorized('admin'));
+            var isAuth = authController.isAuthorized('admin');
+            //assert.equal(true, authController.isAuthorized('admin'));
+            isAuth.should.be.true;
         })
         it('should not allow a get if not authorized');
         it('should allow get if authorized');
@@ -29,8 +38,13 @@ describe('AuthController', function () {
                     assert.equal(false, isAuth);
                     done();
                 });
-
-        })
+        })        
     })
+    describe('isAuthorizedPromise', function () {
+        it('Should return false if not authorized', function () {
+           return authController.isAuthorizedPromise('admin').should.eventually.be.false;
+        })        
+    })
+
 
 });
