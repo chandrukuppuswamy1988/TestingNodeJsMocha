@@ -3,6 +3,7 @@ var authController = require('../../controllers/auth.controller');
 var expect = require('chai').expect;
 var should = require('chai').should();
 var chai = require("chai");
+var sinon = require('sinon');
 var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 chai.should();
@@ -45,6 +46,16 @@ describe('AuthController', function () {
            return authController.isAuthorizedPromise('admin').should.eventually.be.false;
         })        
     })
-
+    describe('getIndex',function(){
+        it('should render index',function(){
+            var req = {};
+            var res = {
+                render: sinon.spy()
+            };
+            authController.getIndex(req,res);
+            res.render.calledOnce.should.be.true;
+            res.render.firstCall.args[0].should.equal('index');
+        })
+    })
 
 });
