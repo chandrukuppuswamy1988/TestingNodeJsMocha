@@ -46,7 +46,6 @@ describe('AuthController', function () {
         it('Should return false if not authorized', function (done) {
             authController.isAuthorizedAsync('regular',
                 function (isAuth) {
-                    console.log(isAuth)
                     assert.equal(false, isAuth);
                     done();
                 });
