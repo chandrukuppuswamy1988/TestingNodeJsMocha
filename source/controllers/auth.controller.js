@@ -1,27 +1,45 @@
-function AuthController()
-{
+function AuthController() {
+
     var roles;
-    
-    function setRoles(role){
+    var user;
+    function setRoles(role) {
         roles = role;
+        user.roles = role;
     }
-    function isAuthorized(neededRole){
-        return roles.indexOf(neededRole) >= 0; 
+    function setUser(inUser) {
+        user = inUser;
     }
-    function isAuthorizedAsync(neededRole, cb){
-        setTimeout(function(){cb(roles.indexOf(neededRole) >= 0)}, 0);  
-    }
-    function isAuthorizedPromise(neededRole, cb){
-        return new Promise(function(resolve){
-            setTimeout(function(){resolve(roles.indexOf(neededRole) >= 0)}, 0); 
-        });         
+    function isAuthorized(neededRole) {
+        if (user) {
+            return user.isAuthorized(neededRole);
+        }
+
     }
 
-    function getIndex(req, res){
-        res.render('index')
+    function isAuthorizedAsync(neededRole, cb) {
+        setTimeout(function () { cb(roles.indexOf(neededRole) >= 0) }, 200);
     }
-    return {isAuthorized, isAuthorizedAsync, setRoles,isAuthorizedPromise,getIndex};
-    
+    function isAuthorizedPromise(neededRole, cb) {
+        return new Promise(function (resolve) {
+            setTimeout(function () { resolve(roles.indexOf(neededRole) >= 0) }, 200);
+        });
+
+    }
+    function getIndex(req, res) {
+        try {
+            if (req.user.isAuthorized('admin')) {
+                return res.render('index');
+            }
+            res.render('notAuth');
+        } catch (e) {
+            res.render('error');
+        }
+
+    }
+    return {
+        isAuthorized, isAuthorizedAsync, setRoles, setUser,
+        isAuthorizedPromise, getIndex
+    };
 }
 
 module.exports = AuthController();
